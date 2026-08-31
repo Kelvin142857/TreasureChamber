@@ -1,0 +1,14 @@
+# 构建上下文排除项
+**/bin/
+**/obj/
+**/App_Data/
+**/node_modules/
+**/ClientApp/dist/
+.downloads/
+.vs/
+.idea/
+.git/
+*.user
+*.suo
+docker-compose.yml
+README.md

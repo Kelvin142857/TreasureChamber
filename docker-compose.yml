@@ -1,0 +1,16 @@
+# TreasureChamber 珍宝展厅 · Docker Compose 一键部署
+# 使用: docker compose up -d
+services:
+  treasurechamber:
+    image: treasurechamber:latest
+    build: .
+    container_name: treasurechamber
+    ports:
+      - "5000:5000"
+    volumes:
+      # 数据持久化：SQLite 库 + 数据保护密钥 存放在命名卷，容器重建不丢数据
+      - treasurechamber-data:/app/App_Data
+    restart: unless-stopped
+
+volumes:
+  treasurechamber-data:

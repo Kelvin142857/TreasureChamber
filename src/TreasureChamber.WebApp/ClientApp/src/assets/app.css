@@ -1,0 +1,32 @@
+.p-menubar { border-radius: 0; padding: 0.6rem 1rem; }
+.brand-title { font-size: 1.15rem; font-weight: 700; margin-right: 2rem; }
+.brand-title .pi { color: #f59e0b; }
+
+.page-wrap { max-width: 1280px; margin: 0 auto; padding: 1rem 1rem 2rem; }
+
+.product-thumb { height: 170px; display: flex; align-items: center; justify-content: center; background: #f8fafc; overflow: hidden; border-radius: 6px 6px 0 0; }
+.product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.product-thumb .empty { color: #94a3b8; }
+
+.series-card { cursor: pointer; text-align: center; transition: box-shadow .15s; }
+.series-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+.series-card .series-name { font-size: 1.05rem; font-weight: 600; color: #1d4ed8; }
+
+.hero { background: linear-gradient(135deg,#1c2333 0%,#2d3a55 100%); border-radius: 12px; padding: 2.5rem 2rem; color: #fff; }
+
+.galleria-img { max-height: 420px; object-fit: contain; background: #f8fafc; }
+
+.spec-table th { width: 30%; background: #f1f5f9; }
+
+.sidebar-cat .p-tree { border: 0; padding: 0; }
+.cat-leaf { font-size: .9rem; }
+
+.qr-label { width: 48mm; height: 60mm; border: 1px dashed #999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2mm; margin: 1mm; text-align: center; page-break-inside: avoid; }
+.qr-label img { width: 36mm; height: 36mm; }
+.qr-label .model { font-weight: 700; font-size: 10pt; margin-top: 1mm; }
+.qr-label .name { font-size: 8pt; color: #555; }
+
+@media print {
+  .no-print { display: none !important; }
+  .qr-label { border: 1px solid #ccc; }
+}
