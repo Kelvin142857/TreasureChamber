@@ -1,12 +1,26 @@
 <template>
   <div>
-    <!-- 搜索 Hero -->
+    <!-- 项目介绍 Hero -->
     <div class="hero mb-4">
-      <h1 class="fw-bold mb-2">珍宝展厅 · 产品目录</h1>
-      <p class="mb-3 opacity-75">按系列 / 分类一层层浏览，输入型号或名称快速查找</p>
+      <h1 class="fw-bold mb-2">珍宝展厅 · 产品管理系统</h1>
+      <p class="mb-1 opacity-75">面向灯具展厅 / 产品展示场所的本地化产品目录与客户意向管理工具</p>
+      <p class="mb-3 opacity-75 small">纯本地离线运行 · 数据不联网 · 客户手机扫码即可查看产品详情</p>
       <div class="d-flex gap-2" style="max-width: 560px;">
         <InputText v-model="keyword" placeholder="输入型号或名称，例如 XD-1001" class="w-full" @keyup.enter="search" />
         <Button label="搜索" icon="pi pi-search" @click="search" />
+      </div>
+    </div>
+
+    <!-- 功能特性介绍 -->
+    <div class="grid mb-4">
+      <div v-for="f in features" :key="f.title" class="col-12 md:col-6 lg:col-3">
+        <Card class="h-full">
+          <template #content>
+            <i :class="['pi', f.icon]" style="font-size:1.6rem;color:#1d4ed8"></i>
+            <div class="font-bold mt-2">{{ f.title }}</div>
+            <div class="text-muted small" style="line-height:1.6">{{ f.desc }}</div>
+          </template>
+        </Card>
       </div>
     </div>
 
@@ -71,6 +85,13 @@ const router = useRouter()
 const keyword = ref('')
 const loading = ref(true)
 const catalog = ref({ series: [], categoryTree: [], recent: [] })
+
+const features = [
+  { icon: 'pi-database', title: '产品目录管理', desc: 'Excel / CSV 批量导入，按系列与多级分类组织，规格参数结构化存储' },
+  { icon: 'pi-qrcode', title: '一物一码', desc: '批量生成产品二维码并打印标签，客户手机扫码直达产品详情' },
+  { icon: 'pi-shopping-cart', title: '客户意向单', desc: '现场登记客户与选购清单，状态跟进流转，一键导出 Excel 跟进' },
+  { icon: 'pi-lock', title: '纯本地离线', desc: '数据存储于本机 SQLite，不联网、不上传，展厅内使用安全可控' }
+]
 
 const treeData = ref([])
 
