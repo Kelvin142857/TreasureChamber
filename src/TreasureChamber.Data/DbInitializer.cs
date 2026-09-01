@@ -2,10 +2,10 @@ using TreasureChamber.Core.Entities;
 
 namespace TreasureChamber.Data;
 
-/// <summary>建库 + 首次运行种子数据（展厅模拟商品）。</summary>
+/// <summary>建库 + 首次运行种子数据（展厅模拟商品，含程序化 SVG 占位图）。</summary>
 public static class DbInitializer
 {
-    public static void Initialize(AppDbContext db)
+    public static void Initialize(AppDbContext db, string? webRootPath = null)
     {
         db.Database.EnsureCreated();
         if (db.Categories.Any() || db.Series.Any()) return;
@@ -162,6 +162,72 @@ public static class DbInitializer
         };
         db.Products.AddRange(products);
         db.SaveChanges();
+
+        // ===== 程序化生成 SVG 占位图（每款 2 张，供卡片与轮播演示） =====
+        if (!string.IsNullOrEmpty(webRootPath))
+        {
+            var uploadRoot = Path.Combine(webRootPath, "uploads");
+            foreach (var product in products)
+            {
+                var dir = Path.Combine(uploadRoot, product.Id.ToString());
+                Directory.CreateDirectory(dir);
+                var (c1, c2) = SeriesColors(product.Series!.Name);
+                for (var i = 1; i <= 2; i++)
+                {
+                    var fileName = $"placeholder-{i}.svg";
+                    var filePath = Path.Combine(dir, fileName);
+                    File.WriteAllText(filePath, PlaceholderSvg(product.Name, product.Model, c1, c2, i));
+                    db.ProductImages.Add(new ProductImage
+                    {
+                        ProductId = product.Id,
+                        Path = $"uploads/{product.Id}/{fileName}",
+                        SortOrder = i
+                    });
+                }
+            }
+            db.SaveChanges();
+        }
+    }
+
+    /// <summary>按系列分配渐变主色。</summary>
+    private static (string C1, string C2) SeriesColors(string series) => series switch
+    {
+        "现代简约" => ("#1e3a5f", "#3b82c4"),
+        "北欧风格" => ("#2d6a4f", "#74a892"),
+        "轻奢风" => ("#8c6a2f", "#d4af6a"),
+        "新中式" => ("#7c4a33", "#b8875f"),
+        "工业风" => ("#3a3f47", "#6b7280"),
+        "智能家居" => ("#4c3a7a", "#8b7fd4"),
+        _ => ("#334155", "#64748b")
+    };
+
+    /// <summary>生成占位 SVG：渐变背景 + 灯泡图形 + 产品名/型号。</summary>
+    private static string PlaceholderSvg(string name, string model, string c1, string c2, int variant)
+    {
+        var angle = variant == 1 ? "0 0 1 1" : "1 0 0 1";
+        var svg = """
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1" gradientTransform="matrix(@angle)">
+      <stop offset="0%" stop-color="@c1"/>
+      <stop offset="100%" stop-color="@c2"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g)"/>
+  <g transform="translate(400,235)" opacity="0.9">
+    <circle cx="0" cy="-14" r="74" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.55)" stroke-width="5"/>
+    <path d="M -38 60 A 38 30 0 0 0 38 60 Z" fill="rgba(255,255,255,0.35)"/>
+    <rect x="-48" y="64" width="96" height="16" rx="8" fill="rgba(255,255,255,0.45)"/>
+    <rect x="-20" y="80" width="40" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+  </g>
+  <text x="400" y="430" text-anchor="middle" font-size="42" font-weight="bold"
+        font-family="'Microsoft YaHei','PingFang SC',sans-serif" fill="rgba(255,255,255,0.96)">@name</text>
+  <text x="400" y="478" text-anchor="middle" font-size="28"
+        font-family="Consolas,Menlo,monospace" fill="rgba(255,255,255,0.78)">@model</text>
+</svg>
+""";
+        return svg.Replace("@angle", angle).Replace("@c1", c1).Replace("@c2", c2)
+            .Replace("@name", name).Replace("@model", model);
     }
 
     private static Product P(string model, string name, Series series, Category category,

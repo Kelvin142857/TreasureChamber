@@ -335,6 +335,7 @@ ASALocalRun/
 # ===== TreasureChamber 补充 =====
 # 运行时数据（SQLite 库 + 数据保护密钥 + 上传图片）
 **/App_Data/
+**/wwwroot/uploads/
 # 临时目录
 .downloads/
 .git-tmp/

@@ -71,7 +71,9 @@ public static class WebAppHost
 
         using (var scope = app.Services.CreateScope())
         {
-            DbInitializer.Initialize(scope.ServiceProvider.GetRequiredService<AppDbContext>());
+            DbInitializer.Initialize(
+                scope.ServiceProvider.GetRequiredService<AppDbContext>(),
+                builder.Environment.WebRootPath);
         }
 
         app.UseStaticFiles();
