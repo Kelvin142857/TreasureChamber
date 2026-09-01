@@ -46,7 +46,20 @@ desktop-publish\TreasureChamber.Desktop.exe
 - 数据目录：`exe 旁 App_Data\`（与 Web 版各自独立）
 - WebView2 数据目录损坏（异常断电等）会**自动清理重试**自愈；缺 Runtime 时给出安装指引
 - 依赖 Microsoft Edge WebView2 Runtime（Win10/11 一般已随 Edge 安装）
-- 手机扫码仍使用 Web/容器部署的 5000 端口，桌面端与 Web 端**二选一运行**（同一数据目录不可并发）
+- 桌面端使用随机端口，与 Web 版互不冲突，可同时运行
+
+## 三种运行方式（如何选择）
+
+| 方式 | 命令 | 适用场景 | 端口 |
+|---|---|---|---|
+| **Web 直跑** | `dotnet run --project src\TreasureChamber.WebApp` | 局域网部署，**手机扫码必须用这个** | `0.0.0.0:5000` |
+| **Docker 容器** | `docker compose up -d` | 服务器/长期运行 | `0.0.0.0:5000` |
+| **PC 桌面端** | `dotnet run --project src\TreasureChamber.Desktop` | 展厅电脑单机使用，双击即用 | `127.0.0.1` 随机 |
+
+> ⚠️ **Web 直跑与 Docker 容器都占用 5000 端口，二者只能同时运行一个**：
+> 若 Web 启动提示"端口 5000 已被占用"，先 `docker stop treasurechamber` 或关掉其他占用程序；
+> 也可以换端口启动：`ASPNETCORE_URLS=http://127.0.0.1:5001 dotnet run --project src\TreasureChamber.WebApp`。
+> 桌面端（随机端口）不受影响，可与上面任一方式并存，但注意两者数据目录独立。
 
 ## 快速开始（本地运行）
 
