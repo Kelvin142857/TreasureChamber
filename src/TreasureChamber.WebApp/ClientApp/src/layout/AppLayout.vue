@@ -4,6 +4,11 @@
       <template #start>
         <span class="brand-title"><i class="pi pi-moon"></i> 珍宝展厅</span>
       </template>
+      <template #end>
+        <Button :icon="isDark ? 'pi pi-sun' : 'pi pi-moon'" text rounded
+                :title="isDark ? '切换到浅色主题' : '切换到深色主题'"
+                @click="toggle" />
+      </template>
     </Menubar>
     <div class="page-wrap">
       <router-view />
@@ -13,10 +18,20 @@
 </template>
 
 <script setup>
-import { useRouter, useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { currentTheme, toggleTheme } from '../theme'
 
 const router = useRouter()
-const route = useRoute()
+const isDark = ref(false)
+
+onMounted(() => {
+  isDark.value = currentTheme() === 'dark'
+})
+
+function toggle() {
+  isDark.value = toggleTheme() === 'dark'
+}
 
 const menu = [
   { label: '产品浏览', icon: 'pi pi-home', command: () => router.push('/') },

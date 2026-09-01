@@ -7,21 +7,46 @@
 | 层 | 技术 |
 |---|---|
 | 后端 | .NET 10 · ASP.NET Core（JSON API）· SQLite (EF Core 10) · 防伪令牌 |
-| 前端 | **Vue 3 + PrimeVue**（DataTable / Galleria / Dialog / Toast / Tree / FileUpload…）· PrimeIcons · Vite 构建 |
+| 前端 | **Vue 3 + PrimeVue**（DataTable / Galleria / Dialog / Toast / Tree / FileUpload…）· PrimeFlex · PrimeIcons · Vite 构建 · **明暗主题** |
+| 桌面端 | **WPF + WebView2**（进程内自托管后端，单 exe 双击即用） |
 | 部署 | Docker 多阶段构建（node → sdk → aspnet 运行时）· Docker Compose |
-| 特性 | 全部静态资源本地化（无 CDN）、Bootstrap 已移除、纯离线可运行 |
+| 特性 | 全部静态资源本地化（无 CDN）、纯离线可运行 |
 
 ## 功能一览
 
 | 模块 | 功能 | 主要 PrimeVue 组件 |
 |---|---|---|
-| 产品浏览 | 首页按系列卡片 / 分类树一层层浏览，型号/名称搜索，分页 | Tree、Card、InputText、Paginator |
+| 产品浏览 | 首页项目介绍 + 按系列卡片 / 分类树一层层浏览，型号/名称搜索，分页 | Tree、Card、InputText、Paginator |
 | 产品详情 | 图片轮播、产品介绍、规格参数表、单产品二维码下载 | Galleria、Tag、Button |
 | 产品管理 | 表格列表、新建/编辑（规格动态行、多图上传删除）、删除确认、状态停用/在售 | DataTable、Dialog、FileUpload、ConfirmDialog |
 | 批量导入 | Excel(.xlsx)/CSV 上传 → 预览校验（新增/更新/错误标记）→ 确认入库；型号已存在自动更新；系列与多级分类（`灯具/吊灯`）自动创建；GBK/UTF-8 自动识别；批量图片按「文件名=型号」匹配 | FileUpload、DataTable、Message |
 | 二维码中心 | 表格多选（含全选本页）→ A4 打印页（二维码+型号+名称，自动打印）/ 打包下载全部 PNG (zip) | DataTable（多选）、Checkbox |
 | 意向单 | 客户信息 + 产品搜索选择（Dialog）+ 动态明细行；编号 YX 开头；列表状态筛选（新建/跟进中/已成交/已放弃）；状态流转；Excel 一键导出 | SelectButton、Dialog、InputNumber、Tag |
 | 系统设置 | 配置二维码访问地址（局域网 IP:端口）、展示本机可用地址与访问基线 | InputText、Message |
+| 明暗主题 | 右上角一键切换深色/浅色，跟随系统偏好，本地持久保存 | Button |
+
+## 明暗主题
+
+- 右上角 🌙/☀️ 按钮一键切换**深色 / 浅色**主题（PrimeVue lara-dark-blue / lara-light-blue）
+- 首次访问跟随系统偏好（`prefers-color-scheme`），选择持久保存在浏览器/WebView2 本地存储
+
+## PC 桌面端（WPF + WebView2）
+
+```bash
+# 开发运行
+dotnet run --project src\TreasureChamber.Desktop
+
+# 发布为单机程序（exe 双击即用）
+dotnet publish src\TreasureChamber.Desktop -c Release -r win-x64 -o desktop-publish
+desktop-publish\TreasureChamber.Desktop.exe
+```
+
+- **双击即用**：桌面窗口（无地址栏），进程内自动启动后端（127.0.0.1 随机端口），无需浏览器
+- 单实例保护：重复启动会提示，避免并发写库
+- 数据目录：`exe 旁 App_Data\`（与 Web 版各自独立）
+- WebView2 数据目录损坏（异常断电等）会**自动清理重试**自愈；缺 Runtime 时给出安装指引
+- 依赖 Microsoft Edge WebView2 Runtime（Win10/11 一般已随 Edge 安装）
+- 手机扫码仍使用 Web/容器部署的 5000 端口，桌面端与 Web 端**二选一运行**（同一数据目录不可并发）
 
 ## 快速开始（本地运行）
 

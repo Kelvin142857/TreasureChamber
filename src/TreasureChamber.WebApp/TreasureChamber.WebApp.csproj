@@ -12,4 +12,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <!-- 前端工程源码不随输出复制（构建产物已在 wwwroot） -->
+  <ItemGroup>
+    <Content Remove="ClientApp\**" />
+    <None Remove="ClientApp\**" />
+  </ItemGroup>
+
 </Project>

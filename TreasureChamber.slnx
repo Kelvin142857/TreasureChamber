@@ -3,6 +3,7 @@
     <Project Path="src/TreasureChamber.Application/TreasureChamber.Application.csproj" />
     <Project Path="src/TreasureChamber.Core/TreasureChamber.Core.csproj" />
     <Project Path="src/TreasureChamber.Data/TreasureChamber.Data.csproj" />
+    <Project Path="src/TreasureChamber.Desktop/TreasureChamber.Desktop.csproj" />
     <Project Path="src/TreasureChamber.WebApp/TreasureChamber.WebApp.csproj" />
   </Folder>
 </Solution>

@@ -3,11 +3,12 @@ import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
 
-import 'primevue/resources/themes/lara-light-blue/theme.css'
+import 'primeflex/primeflex.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import './assets/app.css'
 
+import { applyTheme, currentTheme } from './theme'
 import App from './App.vue'
 import router from './router'
 
@@ -37,6 +38,9 @@ import ProgressSpinner from 'primevue/progressspinner'
 import Toolbar from 'primevue/toolbar'
 import Tree from 'primevue/tree'
 import Divider from 'primevue/divider'
+
+// 挂载前应用主题，避免闪烁
+applyTheme(currentTheme())
 
 const app = createApp(App)
 app.use(PrimeVue, { ripple: true })
