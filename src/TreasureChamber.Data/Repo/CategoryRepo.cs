@@ -28,24 +28,28 @@ public class CategoryRepo(AppDbContext db) : BaseRepo(db)
             .GroupBy(p => p.CategoryId!.Value)
             .Select(g => new { g.Key, Count = g.Count() })
             .ToListAsync();
-        var counts = new Dictionary<int, int>();
-        foreach (var r in raw) counts[r.Key] = r.Count;
-        // 累加到祖先
         var totals = categories.ToDictionary(c => c.Id, c => 0);
         foreach (var r in raw) totals[r.Key] = r.Count;
-        bool changed = true;
+
+        // 求每个节点的深度（父先于子），再自底向上累加：每节点数量 = 自身 + 全部子孙
+        var depth = categories.ToDictionary(c => c.Id, c => 0);
+        var changed = true;
         while (changed)
         {
             changed = false;
             foreach (var c in categories)
             {
-                if (c.ParentId is int pid && totals.ContainsKey(pid) && totals[c.Id] > 0)
+                if (c.ParentId is int pid && depth.ContainsKey(pid) && depth[c.Id] <= depth[pid])
                 {
-                    totals[pid] += totals[c.Id];
-                    totals[c.Id] = 0;
+                    depth[c.Id] = depth[pid] + 1;
                     changed = true;
                 }
             }
+        }
+        foreach (var c in categories.OrderByDescending(c => depth.GetValueOrDefault(c.Id)))
+        {
+            if (c.ParentId is int pid && totals.ContainsKey(pid))
+                totals[pid] += totals[c.Id];
         }
         return totals;
     }
